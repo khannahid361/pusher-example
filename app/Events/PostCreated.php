@@ -8,43 +8,33 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PostCreate implements ShouldBroadcast
+class PostCreated implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
     public $post;
 
-    /**
-     * Create a new event instance.
-     */
-    public $broadcastQueue = null;
-    public function __construct($post)
+    public function __construct(Post $post)
     {
         $this->post = $post;
     }
 
-    /**
-     * The channel on which the event is broadcast.
-     */
-    public function broadcastOn(): Channel
+    // Public channel for all users (or customize for private channels)
+    public function broadcastOn()
     {
-        return new Channel('posts'); // public channel
+        return new Channel('posts');
     }
 
-    /**
-     * Custom event name for frontend.
-     */
-    public function broadcastAs(): string
+    public function broadcastAs()
     {
         return 'PostCreated';
     }
 
-    /**
-     * Data to send to frontend.
-     */
-    public function broadcastWith(): array
+    public function broadcastWith()
     {
         return [
             'id' => $this->post->id,

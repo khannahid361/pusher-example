@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Events\PostCreate;
+use App\Events\PostCreated;
 use App\Models\Post;
 
 class PostController extends Controller
@@ -33,7 +33,7 @@ class PostController extends Controller
             'body' => $request->body
         ]);
 
-        event(new PostCreate($post));
+        event(new PostCreated($post));
    
         return back()->with('success','Post created successfully.');
     }
