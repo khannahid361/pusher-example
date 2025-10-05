@@ -74,7 +74,6 @@
 @endsection
 
 @section('script')
-@if(auth()->user()->is_admin)
 <script type="module">
     window.Echo.channel('posts')
         .listen('.PostCreated', (data) => {
@@ -88,5 +87,4 @@
             );
         });
 </script>
-@endif
 @endsection

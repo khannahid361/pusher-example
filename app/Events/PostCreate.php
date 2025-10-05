@@ -19,7 +19,8 @@ class PostCreate implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct(Post $post)
+    public $broadcastQueue = null;
+    public function __construct($post)
     {
         $this->post = $post;
     }
