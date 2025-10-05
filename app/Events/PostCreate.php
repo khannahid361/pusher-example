@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Post;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -10,36 +11,45 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PostCreate
+class PostCreate implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $post;
-    public function __construct($post)
+
+    /**
+     * Create a new event instance.
+     */
+    public function __construct(Post $post)
     {
         $this->post = $post;
     }
 
-
-    public function broadcastOn(): array
+    /**
+     * The channel on which the event is broadcast.
+     */
+    public function broadcastOn(): Channel
     {
-        return [
-            new PrivateChannel('posts'),
-        ];
-    }
-     public function broadcastAs()
-    {
-        return 'create';
+        return new Channel('posts'); // public channel
     }
 
     /**
-     * Get the data to broadcast.
-     *
-     * @return array
+     * Custom event name for frontend.
+     */
+    public function broadcastAs(): string
+    {
+        return 'PostCreated';
+    }
+
+    /**
+     * Data to send to frontend.
      */
     public function broadcastWith(): array
     {
         return [
-            'message' => "[{$this->post->created_at}] New Post Received with title '{$this->post->title}'."
+            'id' => $this->post->id,
+            'title' => $this->post->title,
+            'created_by' => $this->post->user->name ?? 'Unknown',
+            'created_at' => $this->post->created_at->toDateTimeString(),
         ];
     }
 }
