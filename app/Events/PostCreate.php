@@ -13,24 +13,33 @@ use Illuminate\Queue\SerializesModels;
 class PostCreate
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    /**
-     * Create a new event instance.
-     */
-    public function __construct()
+    public $post;
+    public function __construct($post)
     {
-        //
+        $this->post = $post;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
+
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            new PrivateChannel('posts'),
+        ];
+    }
+     public function broadcastAs()
+    {
+        return 'create';
+    }
+
+    /**
+     * Get the data to broadcast.
+     *
+     * @return array
+     */
+    public function broadcastWith(): array
+    {
+        return [
+            'message' => "[{$this->post->created_at}] New Post Received with title '{$this->post->title}'."
         ];
     }
 }
