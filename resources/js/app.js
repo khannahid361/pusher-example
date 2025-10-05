@@ -1,8 +1,7 @@
 import './bootstrap';
-import Pusher from 'pusher-js';
 import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
 
-// Make them global
 window.Pusher = Pusher;
 
 window.Echo = new Echo({
@@ -12,10 +11,15 @@ window.Echo = new Echo({
     forceTLS: true
 });
 
-// Listen for the post creation event
+// Listen for the PostCreated event
 window.Echo.channel('posts')
-    .listen('.PostCreated', (e) => {
-        console.log('📢 New post broadcast received:', e);
-        // Example: alert user
-        alert(`New post: ${e.title} by ${e.created_by}`);
+    .listen('.PostCreated', (data) => {
+        console.log('📢 New post received:', data);
+        const container = document.getElementById('notification');
+        container.insertAdjacentHTML(
+            'beforeend',
+            `<div class="alert alert-success alert-dismissible fade show">
+                <strong>${data.title}</strong> by ${data.created_by}
+            </div>`
+        );
     });

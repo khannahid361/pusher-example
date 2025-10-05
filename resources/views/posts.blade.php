@@ -74,29 +74,5 @@
 @endsection
 
 @section('script')
-<script type="module">
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
-
-window.Pusher = Pusher;
-
-window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-    forceTLS: true
-});
-    // Listen to post creation event
-window.Echo.channel('posts')
-    .listen('.PostCreated', (data) => {
-        console.log('📢 New post received:', data);
-        const container = document.getElementById('notification');
-        container.insertAdjacentHTML(
-            'beforeend',
-            `<div class="alert alert-success alert-dismissible fade show">
-                <strong>New Post:</strong> ${data.title} by ${data.created_by}
-            </div>`
-        );
-    });
-</script>
+<script type="module" src="{{ Vite::asset('resources/js/app.js') }}"></script>
 @endsection
